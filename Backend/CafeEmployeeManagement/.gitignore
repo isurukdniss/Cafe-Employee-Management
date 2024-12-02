@@ -1,0 +1,61 @@
+# Build Folders
+bin/
+obj/
+
+# User-specific files
+*.user
+*.userosscache
+*.sln.docstates
+
+# Logs
+*.log
+logs/
+
+# Visual Studio
+.vscode/
+.vs/
+
+# Node.js dependencies
+node_modules/
+
+# IDE-specific settings
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.psess
+
+# ASP.NET Scaffolding
+Generated_Code/
+
+# Packages
+packages/
+*.nupkg
+*.snupkg
+
+# Libman
+libman.json
+
+# Entity Framework
+*.efmigrationlogs
+*.dbmdl
+migrations/
+
+# Azure
+.publish/
+
+# Other files and folders
+*.swp
+*.lock.json
+project.lock.json
+artifacts/
+
+# Environment variables
+.env
+.env.*
+
+# Resharper
+*.DotSettings.user
+
+# JetBrains Rider
+.idea/
