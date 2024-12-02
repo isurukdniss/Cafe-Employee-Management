@@ -59,9 +59,15 @@ The Application will start running on `https://localhost:7199` url.
 | DELETE | /Employee/{id}| Delete Employee by Id |
 -------
 
->Note: The Swagger / Swagger UI is not available in the project as the .Net 9 has switched to the OpenApi.
+### Open API Documentation
+Navigate to the below URL to see the OpenAPI documentation
+```
+https://localhost:7199/openapi/v1.json
+```
 
+>Note: The Swagger / Swagger UI is not available in the project as the .Net 9 has switched to the OpenApi. Please use the above URL for API documentation.
 
+----
 
 ## Frontend
 The application frontend can be found in `/Frontend/cafe-employee-management-web`
