@@ -1,4 +1,4 @@
-﻿using CafeEmployeeManagement.Domain.Interfaces;
+﻿using CafeEmployeeManagement.Application.Interfaces;
 using CafeEmployeeManagement.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;

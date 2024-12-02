@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using CafeEmployeeManagement.Application.Features.Employees.Commands.CreateEmployee;
-using CafeEmployeeManagement.Domain.Interfaces;
+using CafeEmployeeManagement.Application.Interfaces;
 using Moq;
 
 namespace CafeEmployeeManagement.Application.UnitTests.Features.Employee.Commands.CreateEmployee

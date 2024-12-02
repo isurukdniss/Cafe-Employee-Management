@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Autofac.Core;
 using CafeEmployeeManagement.Infrastructure.Repositories;
-using CafeEmployeeManagement.Domain.Interfaces;
+using CafeEmployeeManagement.Application.Interfaces;
 
 namespace CafeEmployeeManagement.Infrastructure
 {

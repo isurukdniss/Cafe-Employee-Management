@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using CafeEmployeeManagement.Application.Common.Models;
+using CafeEmployeeManagement.Application.Interfaces;
 using CafeEmployeeManagement.Domain.Entities;
-using CafeEmployeeManagement.Domain.Interfaces;
 using MediatR;
 using System.Globalization;
 using System.Linq.Expressions;

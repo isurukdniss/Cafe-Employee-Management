@@ -1,6 +1,6 @@
 ﻿using CafeEmployeeManagement.Domain.Entities;
 
-namespace CafeEmployeeManagement.Domain.Interfaces
+namespace CafeEmployeeManagement.Application.Interfaces
 {
     public interface ICafeRepository : IRepository<Cafe, Guid>
     {
