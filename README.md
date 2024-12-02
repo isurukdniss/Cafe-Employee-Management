@@ -57,6 +57,11 @@ The Application will start running on `https://localhost:7199` url.
 | POST | /Employee| Create new Employee |
 | PUT | /Employee/{id} | Update Employee by Id |
 | DELETE | /Employee/{id}| Delete Employee by Id |
+
+Example usage:
+```
+curl --location 'https://localhost:7199/api/Employee'
+```
 -------
 
 ### Open API Documentation
