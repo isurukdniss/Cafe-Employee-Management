@@ -57,11 +57,10 @@ The Application will start running on `https://localhost:7199` url.
 | POST | /Employee| Create new Employee |
 | PUT | /Employee/{id} | Update Employee by Id |
 | DELETE | /Employee/{id}| Delete Employee by Id |
+-------
 
+>Note: The Swagger / Swagger UI is not available in the project as the .Net 9 has switched to the OpenApi.
 
-```
-Note: The Swagger / Swagger UI is not available in the project as .Net 9 has switched to the OpenApi.
-```
 
 
 ## Frontend
