@@ -11,6 +11,7 @@ import DeleteDialog from "./../common/DeleteDialog";
 
 export default function EmployeeList() {
     const [rowData, setRowData] = useState([]);
+    const [filteredData, setFilteredData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [itemToDelete, setItemToDelete] = useState(null);
@@ -102,6 +103,7 @@ export default function EmployeeList() {
 
             if (success) {
                 setRowData(data);
+                setFilteredData(data);
             } else {
                 setError(errors.length > 0 ? errors.join(', ') : "Unknown error occurred");
             }
@@ -122,11 +124,14 @@ export default function EmployeeList() {
 
     const handleSearch = (e) => {
         console.log("Search Term: " + e.target.value);
-        setSearchTerm(e.target.value);
-        const filteredData = rowData.filter((row) =>
-            row.cafeName.toLowerCase().includes(e.target.value.toLowerCase())
+
+        const value = e.target.value.toLowerCase();
+        setSearchTerm(value);
+
+        const filtered = rowData.filter((employee) =>
+            employee.cafeName.toLowerCase().includes(value)
         );
-        setRowData(filteredData);
+        setFilteredData(filtered);
     };
 
     return (
@@ -164,7 +169,7 @@ export default function EmployeeList() {
                     className="ag-theme-alpine"
                 >
                     <AgGridReact
-                        rowData={rowData}
+                        rowData={filteredData}
                         columnDefs={columnDefs}
                         defaultColDef={{
                             sortable: true,

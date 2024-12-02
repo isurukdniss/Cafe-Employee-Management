@@ -20,7 +20,6 @@
 .radio-group-option input[type="radio"] {
     margin-right: 8px;
     accent-color: #3f51b5;
-    /* Primary Material-UI color */
 }
 
 .radio-group-option label {
@@ -30,7 +29,6 @@
 
 .error-message {
     color: #d32f2f;
-    /* Material-UI error color */
     font-size: 12px;
     margin-top: 4px;
 }

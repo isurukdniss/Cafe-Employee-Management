@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { deleteCafe, getCafes } from "../../services/api";
+import { deleteCafe, getCafes, BASE_URL } from "../../services/api";
 import { AgGridReact } from "ag-grid-react";
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
@@ -11,27 +11,26 @@ import { ToastContainer, toast } from "react-toastify";
 export default function CafeList() {
 
     const navigate = useNavigate();
-    const [originalRowData, setOriginalRowData] = useState([]);
-    const [rowData, setRowData] = useState(originalRowData);
+    const [rowData, setRowData] = useState([]);
+    const [filteredData, setFilteredData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [itemToDelete, setItemToDelete] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
 
-    const baseURL = 'https://localhost:7199/';
-
     const [columnDefs, setColumnDefs] = useState([
-        // { field: 'logo', headerName: 'Logo' },
         {
             headerName: "Logo",
             field: "logo",
             cellRenderer: (params) => {
-                // const div = document.createElement("div");
-                // div.innerHTML = `<img src="${baseURL + params.value}" style="height: 14px; width: 14px;"/>`;
-                // return div;
-
-                <img src={baseURL + params.value} style="height: 14px; width: 14px;" />
+                return (
+                    <img
+                        src={BASE_URL + params.value}
+                        alt="Cafe Logo"
+                        style={{ width: "20px", height: "20px", objectFit: "cover" }}
+                    />
+                )
 
             },
         },
@@ -102,20 +101,13 @@ export default function CafeList() {
     };
 
     const handleSearch = (e) => {
-        setSearchTerm(e.target.value);
-        console.log(searchTerm);
-        if (!searchTerm) {
-            setRowData(originalRowData);
-        } else {
-            const filteredData = originalRowData.filter((row) =>
-                row.location.toLowerCase().includes(searchTerm.toLowerCase())
-            );
+        const value = e.target.value.toLowerCase();
+        setSearchTerm(value);
 
-            console.log(searchTerm);
-            console.log(filteredData);
-
-            setRowData(filteredData);
-        }
+        const filtered = rowData.filter((cafe) =>
+            cafe.location.toLowerCase().includes(value)
+        );
+        setFilteredData(filtered);
     }
 
     useEffect(() => {
@@ -129,7 +121,7 @@ export default function CafeList() {
 
             if (success) {
                 setRowData(data);
-                setOriginalRowData(data);
+                setFilteredData(data);
             } else {
                 setError(errors.length > 0 ? errors.join(', ') : "Unknown error occurred");
             }
@@ -183,7 +175,7 @@ export default function CafeList() {
                     className="ag-theme-alpine"
                 >
                     <AgGridReact
-                        rowData={rowData}
+                        rowData={filteredData}
                         columnDefs={columnDefs}
                         defaultColDef={{
                             sortable: true,

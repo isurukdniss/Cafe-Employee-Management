@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_BASE_URL = "https://localhost:7199/api";
+export const BASE_URL = "https://localhost:7199/"
+const API_BASE_URL = BASE_URL + "api";
 
 // Cafe APIs
 export const getCafes = () => axios.get(`${API_BASE_URL}/cafe`);
