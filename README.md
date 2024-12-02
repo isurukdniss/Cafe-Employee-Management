@@ -6,7 +6,7 @@ This repository contains the source code of two projects of the Cafe Employee Ma
 2. Frontend
 
 
-First clone the repository
+To get started, begin by cloning the repository.
 
 ```
 git clone https://github.com/isurukdniss/Cafe-Employee-Management.git
