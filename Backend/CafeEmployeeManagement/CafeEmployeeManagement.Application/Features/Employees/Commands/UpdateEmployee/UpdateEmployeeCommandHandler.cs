@@ -34,7 +34,7 @@ namespace CafeEmployeeManagement.Application.Features.Employees.Commands.UpdateE
                 var cafe = await cafeRepository.GetByIdAsync(request.CafeId.Value);
                 if (cafe == null)
                 {
-                    return ApiResponse<bool>.SetFailure(["Cafe not found"]);
+                    return ApiResponse<bool>.SetFailure(["The given Cafe Id not found"]);
                 }
             }
 
