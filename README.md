@@ -47,12 +47,12 @@ The Application will start running on `https://localhost:7199` url.
 
 | HTTP Method | Endpoint | Description |
 | ------------|----------|-------------|
-| GET | /Cafe?location=<location>| Get all cafes. Supports search by location |
+| GET | /Cafe?location="location"| Get all cafes. Supports search by location |
 | GET | /Cafe/{id}| Get cafe by Id |
 | POST | /Cafe| Create new Cafe. The input type is FormData |
 | PUT | /Cafe/{id} | Update Cafe by Id. The input type is FormData  |
 | DELETE | /Cafe/{id}| Delete Cafe by Id |
-| GET | /Employee?cafe=<cafe_name>| Get all employees. Supports search by cafe name |
+| GET | /Employee?cafe="cafe_name"| Get all employees. Supports search by cafe name |
 | GET | /Employee/{id} | Get Employee by Id |
 | POST | /Employee| Create new Employee |
 | PUT | /Employee/{id} | Update Employee by Id |
