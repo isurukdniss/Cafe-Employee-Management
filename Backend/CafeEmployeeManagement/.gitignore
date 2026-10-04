@@ -39,7 +39,6 @@ libman.json
 # Entity Framework
 *.efmigrationlogs
 *.dbmdl
-migrations/
 
 # Azure
 .publish/

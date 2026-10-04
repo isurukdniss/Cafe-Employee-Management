@@ -1,10 +1,6 @@
-﻿using Autofac;
-using AutoMapper;
 using CafeEmployeeManagement.Application.Common.Behaviours;
 using FluentValidation;
-using MediatR;
-using MediatR.Extensions.Autofac.DependencyInjection;
-using MediatR.Extensions.Autofac.DependencyInjection.Builder;
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using System.Reflection;
 
@@ -12,53 +8,27 @@ namespace CafeEmployeeManagement.Application
 {
     public static class DependencyInjection
     {
-        public static ContainerBuilder RegisterApplicationServices(this ContainerBuilder builder)
+        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-            var configuration = MediatRConfigurationBuilder
-                .Create(typeof(DependencyInjection).Assembly)
-                .WithAllOpenGenericHandlerTypesRegistered()
-            .Build();
-            builder.RegisterMediatR(configuration);
+            var assembly = Assembly.GetExecutingAssembly();
 
-            //builder.RegisterAssemblyTypes(typeof(CreateEmployeeCommandValidator).Assembly)
-            //   .AsImplementedInterfaces()
-            //   .InstancePerLifetimeScope();
+            services.AddMediatR(cfg =>
+            {
+                cfg.RegisterServicesFromAssembly(assembly);
+                cfg.AddOpenBehavior(typeof(LoggingBehaviour<,>));
+                cfg.AddOpenBehavior(typeof(ValidationBehaviour<,>));
+            });
 
-            //builder.RegisterAssemblyTypes(typeof(UpdateEmployeeCommandValidator).Assembly)
-            //   .AsImplementedInterfaces()
-            //   .InstancePerLifetimeScope();
+            services.AddValidatorsFromAssembly(assembly);
 
-            //builder.RegisterAssemblyTypes(typeof(CreateCafeCommandValidator).Assembly)
-            //   .AsImplementedInterfaces()
-            //   .InstancePerLifetimeScope();
-
-            //builder.RegisterAssemblyTypes(typeof(UpdateCafeCommandValidator).Assembly)
-            //   .AsImplementedInterfaces()
-            //   .InstancePerLifetimeScope();
-
-            builder.RegisterAssemblyTypes(AppDomain.CurrentDomain.GetAssemblies())
-               .AsClosedTypesOf(typeof(IValidator<>))
-               .AsImplementedInterfaces();
-
-            builder.RegisterGeneric(typeof(LoggingBehaviour<,>)).As(typeof(IPipelineBehavior<,>)).InstancePerLifetimeScope();
-            builder.RegisterGeneric(typeof(ValidationBehaviour<,>)).As(typeof(IPipelineBehavior<,>)).InstancePerLifetimeScope();
+            services.AddAutoMapper(cfg => { }, assembly);
 
             Log.Logger = new LoggerConfiguration()
                     .WriteTo.Console().CreateLogger();
 
-            builder.Register(c => Log.Logger).As<ILogger>().SingleInstance();
+            services.AddSingleton(Log.Logger);
 
-            builder.Register(context =>
-            {
-                var config = new MapperConfiguration(cfg =>
-                {
-                    cfg.AddMaps(Assembly.GetExecutingAssembly());
-                });
-
-                return config.CreateMapper();
-            }).As<IMapper>().SingleInstance();
-
-            return builder;
+            return services;
         }
     }
 }

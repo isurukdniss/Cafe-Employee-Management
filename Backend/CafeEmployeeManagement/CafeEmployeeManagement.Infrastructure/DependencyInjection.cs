@@ -1,57 +1,27 @@
-﻿using Autofac;
+using CafeEmployeeManagement.Application.Interfaces;
 using CafeEmployeeManagement.Infrastructure.Persistence;
-using MediatR.Extensions.Autofac.DependencyInjection.Builder;
-using MediatR.Extensions.Autofac.DependencyInjection;
+using CafeEmployeeManagement.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Autofac.Core;
-using CafeEmployeeManagement.Infrastructure.Repositories;
-using CafeEmployeeManagement.Application.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CafeEmployeeManagement.Infrastructure
 {
     public static class DependencyInjection
     {
-        public static ContainerBuilder RegisterInfrastructureServices(this ContainerBuilder builder,
+        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services,
             IConfiguration configuration)
         {
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
+            var connectionString = configuration.GetConnectionString("DefaultConnection")
+                ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is not configured.");
 
-            if (connectionString == null)
-            {
-                throw new Exception(); // TODO: Handle exception properly
-            }
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 
-            builder.RegisterInstance(connectionString)
-                .As<string>()
-                .Named<string>("DefaultConnection");
+            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            services.AddScoped<ICafeRepository, CafeRepository>();
+            services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
 
-            builder.Register(x =>
-            {
-                var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-                optionsBuilder.UseNpgsql(connectionString);
-                return new ApplicationDbContext(optionsBuilder.Options);
-            }).InstancePerLifetimeScope();
-
-            var mediatRConfig = MediatRConfigurationBuilder
-                .Create(typeof(DependencyInjection).Assembly)
-                .WithAllOpenGenericHandlerTypesRegistered()
-                .Build();
-
-            builder.RegisterMediatR(mediatRConfig);
-
-            builder.RegisterType<EmployeeRepository>().As<IEmployeeRepository>().InstancePerLifetimeScope();
-            builder.RegisterType<CafeRepository>().As<ICafeRepository>().InstancePerLifetimeScope();
-
-            builder.RegisterGeneric(typeof(Repository<,>)).As(typeof(IRepository<,>)).InstancePerLifetimeScope();
-
-
-            return builder;
+            return services;
         }
     }
 }
