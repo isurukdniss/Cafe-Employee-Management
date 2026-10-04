@@ -19,7 +19,7 @@ dotnet test
 dotnet test --filter "FullyQualifiedName~CreateEmployeeCommandHandlerTests"   # single test class/method
 ```
 
-Database: PostgreSQL, connection string `DefaultConnection` in `CafeEmployeeManagement.API/appsettings.json`. EF migrations are **not committed** (`migrations/` is in `.gitignore`) and the app does not auto-migrate, so create the schema locally:
+Database: SQL Server (`Microsoft.EntityFrameworkCore.SqlServer`), connection string `DefaultConnection` in `CafeEmployeeManagement.API/appsettings.json`. It points at the local default instance `LAPTOP-GGDAUKFV`, database `CafeEmployee`, with Windows authentication (`Trusted_Connection=True;TrustServerCertificate=True`). Query it with `sqlcmd -S LAPTOP-GGDAUKFV -E -C -d CafeEmployee`. EF migrations are **not committed** (`migrations/` is in `.gitignore`) and the app does not auto-migrate, so create the schema locally:
 ```
 dotnet ef migrations add Initial --project CafeEmployeeManagement.Infrastructure --startup-project CafeEmployeeManagement.API
 dotnet ef database update --project CafeEmployeeManagement.Infrastructure --startup-project CafeEmployeeManagement.API
@@ -42,7 +42,7 @@ The frontend has no tests. The API base URL is hard-coded in `src/services/api.j
 Clean Architecture with CQRS via MediatR:
 - **Domain**: entities (`Cafe`, `Employee`, `BaseEntity` with `CreatedDate`/`UpdatedDate`) and `Gender` enum. `Cafe.Id` is a `Guid`. `Employee.Id` is a string generated in the entity constructor (`"UI"` + 7 random alphanumerics).
 - **Application**: one folder per use case under `Features/{Cafes|Employees}/{Commands|Queries}/<UseCase>/`, holding the request, handler, and optional FluentValidation validator. Handlers depend on repository interfaces in `Application/Interfaces` (`IRepository<T,TKey>`, `ICafeRepository`, `IEmployeeRepository`) and return `ApiResponse<T>` (`Common/Models/ApiResponse.cs`, built with `SetSuccess`/`SetFailure`). AutoMapper profiles live in `Common/Mappings/MappingProfile.cs`.
-- **Infrastructure**: `ApplicationDbContext` (Npgsql) and repository implementations. `SaveChangesAsync` sets the `BaseEntity` timestamps automatically. Cafe → Employees is a cascade delete.
+- **Infrastructure**: `ApplicationDbContext` (SQL Server) and repository implementations. `SaveChangesAsync` sets the `BaseEntity` timestamps automatically. Cafe → Employees is a cascade delete.
 - **API**: thin controllers under the `api/[controller]` route that call `mediator.Send(...)` and map `response.Success == false` to `400`. `ExceptionMiddleware` converts unhandled exceptions, including FluentValidation `ValidationException` thrown by `ValidationBehaviour`, to a `500` with an `ApiResponse<string>` body.
 
 Dependency injection uses the built-in `IServiceCollection` container. Registrations happen in `AddApplicationServices` (`Application/DependencyInjection.cs`) and `AddInfrastructureServices` (`Infrastructure/DependencyInjection.cs`), and `Program.cs` calls both. New repositories need explicit registration there. Handlers, validators and AutoMapper profiles are picked up automatically by assembly scanning. MediatR pipeline behaviours, in order: `LoggingBehaviour` (Serilog console) and `ValidationBehaviour`. The old Autofac registrations live in `DependencyInjection.Autofac.cs` in both projects for reference only. They are excluded from compilation in the `.csproj` files and the Autofac packages are removed, so don't edit them.

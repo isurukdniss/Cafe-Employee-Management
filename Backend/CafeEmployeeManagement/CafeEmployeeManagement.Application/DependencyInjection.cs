@@ -21,7 +21,7 @@ namespace CafeEmployeeManagement.Application
 
             services.AddValidatorsFromAssembly(assembly);
 
-            services.AddAutoMapper(assembly);
+            services.AddAutoMapper(cfg => { }, assembly);
 
             Log.Logger = new LoggerConfiguration()
                     .WriteTo.Console().CreateLogger();

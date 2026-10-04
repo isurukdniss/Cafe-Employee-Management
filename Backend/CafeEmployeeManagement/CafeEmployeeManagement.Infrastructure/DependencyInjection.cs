@@ -15,7 +15,7 @@ namespace CafeEmployeeManagement.Infrastructure
             var connectionString = configuration.GetConnectionString("DefaultConnection")
                 ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is not configured.");
 
-            services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 
             services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             services.AddScoped<ICafeRepository, CafeRepository>();
