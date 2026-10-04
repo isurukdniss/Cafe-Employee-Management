@@ -19,10 +19,10 @@ dotnet test
 dotnet test --filter "FullyQualifiedName~CreateEmployeeCommandHandlerTests"   # single test class/method
 ```
 
-Database: SQL Server (`Microsoft.EntityFrameworkCore.SqlServer`), connection string `DefaultConnection` in `CafeEmployeeManagement.API/appsettings.json`. It points at the local default instance `LAPTOP-GGDAUKFV`, database `CafeEmployee`, with Windows authentication (`Trusted_Connection=True;TrustServerCertificate=True`). Query it with `sqlcmd -S LAPTOP-GGDAUKFV -E -C -d CafeEmployee`. EF migrations are **not committed** (`migrations/` is in `.gitignore`) and the app does not auto-migrate, so create the schema locally:
+Database: SQL Server (`Microsoft.EntityFrameworkCore.SqlServer`), connection string `DefaultConnection` in `CafeEmployeeManagement.API/appsettings.json`. It points at the local default instance `LAPTOP-GGDAUKFV`, database `CafeEmployee`, with Windows authentication (`Trusted_Connection=True;TrustServerCertificate=True`). Query it with `sqlcmd -S LAPTOP-GGDAUKFV -E -C -d CafeEmployee`. EF migrations are committed in `CafeEmployeeManagement.Infrastructure/Migrations/`. The app does not auto-migrate, so apply them with `database update`. After changing entities, `ApplicationDbContext` or seed data, add a new migration:
 ```
-dotnet ef migrations add Initial --project CafeEmployeeManagement.Infrastructure --startup-project CafeEmployeeManagement.API
 dotnet ef database update --project CafeEmployeeManagement.Infrastructure --startup-project CafeEmployeeManagement.API
+dotnet ef migrations add <Name> --project CafeEmployeeManagement.Infrastructure --startup-project CafeEmployeeManagement.API
 ```
 Seed data (cafes/employees with fixed IDs) lives in `Infrastructure/Persistence/SeedDataStore.cs` via `HasData`.
 
