@@ -1,5 +1,3 @@
-using Autofac;
-using Autofac.Extensions.DependencyInjection;
 using CafeEmployeeManagement.API.Extensions.Middleware;
 using CafeEmployeeManagement.Application;
 using CafeEmployeeManagement.Infrastructure;
@@ -27,12 +25,8 @@ if (!Directory.Exists(uploadPath))
     Directory.CreateDirectory(uploadPath);
 }
 
-builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
-builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
-{
-    containerBuilder.RegisterInfrastructureServices(builder.Configuration);
-    containerBuilder.RegisterApplicationServices();
-});
+builder.Services.AddInfrastructureServices(builder.Configuration);
+builder.Services.AddApplicationServices();
 
 var app = builder.Build();
 
