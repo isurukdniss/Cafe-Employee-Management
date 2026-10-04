@@ -1,6 +1,9 @@
+using CafeEmployeeManagement.API.Extensions;
 using CafeEmployeeManagement.API.Extensions.Middleware;
+using CafeEmployeeManagement.API.Extensions.OpenApi;
 using CafeEmployeeManagement.Application;
 using CafeEmployeeManagement.Infrastructure;
+using CafeEmployeeManagement.Infrastructure.Identity;
 using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(options => options.AddDocumentTransformer<BearerSecuritySchemeTransformer>());
 
 builder.Services.AddCors(options =>
 {
@@ -27,6 +30,7 @@ if (!Directory.Exists(uploadPath))
 
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddApplicationServices();
+builder.Services.AddJwtAuthentication(builder.Configuration);
 
 var app = builder.Build();
 
@@ -37,11 +41,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(options => options.SwaggerEndpoint("/openapi/v1.json", "Cafe Employee Management API"));
 }
 
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
 app.UseMiddleware<ExceptionMiddleware>();
+
+app.UseHttpsRedirection();
 
 app.UseStaticFiles(new StaticFileOptions
 {
@@ -50,9 +52,14 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = "/Uploads"
 });
 
+// CORS must run before authentication so 401/403 responses still carry CORS headers.
 app.UseCors("AllowAll");
 
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
+
+await IdentitySeeder.SeedAdminUserAsync(app.Services);
 
 app.Run();

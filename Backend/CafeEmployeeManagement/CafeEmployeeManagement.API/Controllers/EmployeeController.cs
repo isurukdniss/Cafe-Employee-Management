@@ -2,13 +2,16 @@
 using CafeEmployeeManagement.Application.Features.Employees.Commands.DeleteEmployee;
 using CafeEmployeeManagement.Application.Features.Employees.Commands.UpdateEmployee;
 using CafeEmployeeManagement.Application.Features.Employees.Queries.GetEmployees;
+using CafeEmployeeManagement.Domain.Constants;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CafeEmployeeManagement.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class EmployeeController : ControllerBase
     {
         private readonly IMediator mediator;
@@ -46,6 +49,7 @@ namespace CafeEmployeeManagement.API.Controllers
             return Ok(response);
         }
 
+        [Authorize(Roles = Roles.Admin)]
         [HttpPost]
         public async Task<ActionResult> CreateEmployee([FromBody] CreateEmployeeCommand command)
         {
@@ -58,6 +62,7 @@ namespace CafeEmployeeManagement.API.Controllers
             return Ok(response);
         }
 
+        [Authorize(Roles = Roles.Admin)]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateEmployee(string id, [FromBody] UpdateEmployeeCommand command)
         {
@@ -71,6 +76,7 @@ namespace CafeEmployeeManagement.API.Controllers
             return Ok(response);
         }
 
+        [Authorize(Roles = Roles.Admin)]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEmployee(string id)
         {

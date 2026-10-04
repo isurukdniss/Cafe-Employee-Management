@@ -1,4 +1,6 @@
-﻿using CafeEmployeeManagement.Domain.Entities;
+﻿using CafeEmployeeManagement.Domain.Constants;
+using CafeEmployeeManagement.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -68,6 +70,23 @@ namespace CafeEmployeeManagement.Infrastructure.Persistence
                         Gender = Domain.Enums.Gender.Male,
                         CreatedDate = new DateTime(2010, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                         UpdatedDate = new DateTime(2015, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                    }
+                );
+
+            modelBuilder.Entity<IdentityRole>().HasData(
+                    new IdentityRole
+                    {
+                        Id = "6f0f3a7e-6a43-4c55-9e27-3c1f0d2a9b10",
+                        Name = Roles.Admin,
+                        NormalizedName = Roles.Admin.ToUpperInvariant(),
+                        ConcurrencyStamp = "b3b7f1c2-1d6e-4f0a-8a35-0c9e5d7b2a41",
+                    },
+                    new IdentityRole
+                    {
+                        Id = "2c8d5b91-47e3-4a8f-b6d2-91e4f7a3c5d8",
+                        Name = Roles.User,
+                        NormalizedName = Roles.User.ToUpperInvariant(),
+                        ConcurrencyStamp = "e7a2c4d9-5b1f-4e86-9c3a-6d8b0f2e1a57",
                     }
                 );
         }

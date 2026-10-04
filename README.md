@@ -43,24 +43,35 @@ dotnet run --launch-profile https
 
 The Application will start running on `https://localhost:7199` url.
 
+### Authentication
+
+All Cafe and Employee endpoints need a JWT bearer token. Log in (or register) to get one, then send it in the `Authorization` header. Any logged-in user can read; only users with the `Admin` role can create, update or delete. In Development, an admin account `admin@cafe.local` / `Admin@12345` is created on startup.
+
+See [Authentication.md](Backend/CafeEmployeeManagement/Authentication.md) for the full details.
+
 ### Endpoints
 
-| HTTP Method | Endpoint | Description |
-| ------------|----------|-------------|
-| GET | /Cafe?location="location"| Get all cafes. Supports search by location |
-| GET | /Cafe/{id}| Get cafe by Id |
-| POST | /Cafe| Create new Cafe. The input type is FormData |
-| PUT | /Cafe/{id} | Update Cafe by Id. The input type is FormData  |
-| DELETE | /Cafe/{id}| Delete Cafe by Id |
-| GET | /Employee?cafe="cafe_name"| Get all employees. Supports search by cafe name |
-| GET | /Employee/{id} | Get Employee by Id |
-| POST | /Employee| Create new Employee |
-| PUT | /Employee/{id} | Update Employee by Id |
-| DELETE | /Employee/{id}| Delete Employee by Id |
+| HTTP Method | Endpoint | Description | Access |
+| ------------|----------|-------------|--------|
+| POST | /Auth/register | Register a new user (gets the `User` role) and return a token | Anyone |
+| POST | /Auth/login | Log in and return a token | Anyone |
+| POST | /Auth/assign-role | Assign a role to a user | Admin |
+| GET | /Cafe?location="location"| Get all cafes. Supports search by location | Logged in |
+| GET | /Cafe/{id}| Get cafe by Id | Logged in |
+| POST | /Cafe| Create new Cafe. The input type is FormData | Admin |
+| PUT | /Cafe/{id} | Update Cafe by Id. The input type is FormData  | Admin |
+| DELETE | /Cafe/{id}| Delete Cafe by Id | Admin |
+| GET | /Employee?cafe="cafe_name"| Get all employees. Supports search by cafe name | Logged in |
+| GET | /Employee/{id} | Get Employee by Id | Logged in |
+| POST | /Employee| Create new Employee | Admin |
+| PUT | /Employee/{id} | Update Employee by Id | Admin |
+| DELETE | /Employee/{id}| Delete Employee by Id | Admin |
 
 Example usage:
 ```
-curl --location 'https://localhost:7199/api/Employee'
+curl --location 'https://localhost:7199/api/Auth/login' --header 'Content-Type: application/json' --data '{"email":"admin@cafe.local","password":"Admin@12345"}'
+
+curl --location 'https://localhost:7199/api/Employee' --header 'Authorization: Bearer <token from the login response>'
 ```
 -------
 
